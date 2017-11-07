@@ -1,0 +1,67 @@
+KLIPS_getTimeSeries <- function(file__Path, itemCode, indexs){
+  #=======================================================================================
+  # 해당 함수는 한국노동연구원 한국노동패널(KLIPS)의 파일들이 시간으로 나누어져
+  # 특정 항목을 시계열자료로 구성해야 할 때의 불편함을 줄이고자 작성되었습니다.
+  # 물론 초기시점을 기준으로 다른 시점들의 교집합에 대해서만 
+  # 구성한다는 점에 주의하십시오.
+  # 파일은 dta 포맷에 한정하여 가능합니다. 또한 foreign 라이브러리를 설치하셔야 합니다.
+  # 또 하나 (개인)자료에 한정합니다.
+  # 작성자 : 현정경 (블로그주소 : http://jobmg.dothome.co.kr)
+  # 파라미터 설명 :
+  #  filePath : (문자형)KLIPS 자료가 있는 실제 경로(ex)C:/R/KLIPs/
+  #  itemCode : (문자형)원하는 항목코드 네 자리.
+  #  indexs : (벡터)차수에 해당하는 정보 리스트. ex)2차부터 4차까지 하려면 (2:4)
+  # 사용 예 : 
+  # data <- KLIPS_getTimeSeries("I:/R/data/","0211", 10:11)
+  #=======================================================================================
+  isChecked = 0#value checked
+  if(is.na(file__Path) || file__Path == ""){print("filePath에 값이 없습니다.")}
+  if(is.na(itemCode) || itemCode == ""){print("itemCode에 값이 없습니다.")}
+  else if(is.na(indexs) || length(indexs) == 0){print("indexs에 값이 없습니다.")}
+  else if (length(find.package("foreign")) == 0){print("foreign패키지가 필요합니다.")}
+  else{isChecked = 1}
+  
+  if(isChecked == 1){
+    bef_Path = getwd()
+    setwd(file__Path)#경로 변경.
+    result = {}#리턴할 데이터셋.
+    
+    for(i in indexs){
+      Nth = ""
+      if (i > 99) {
+        print("indexs에 100 이상은 불가능합니다.")
+        break
+      }
+      else if (i < 10){
+        Nth = paste("0", i,sep="")
+      }
+      else {
+        Nth = i
+      }
+      
+      #차수에 해당하는 파일명 세팅.
+      Link = paste("klips",Nth,"p_i.dta",sep="")
+      itemVal = paste("p", Nth, itemCode,sep="")
+      
+      #데이터 불러오기.
+      getDt <- data.frame(read.dta(Link))
+      
+      if(length(result) == 0){
+        pid <- getDt["pid"]#일련번호
+        item <- getDt[itemVal]#원하는 항목.
+        result <- cbind(pid, item)
+        colnames(result) <- c("일련번호", paste(i,"차",sep=""))
+      }
+      else {
+        getDt <- cbind(getDt["pid"], getDt[itemVal])
+        x1 <- result[match(result[,1],getDt[,1]),]
+        x2 <- getDt[match(result[,1],getDt[,1]),]
+        result <- cbind(x1, x2[,2])
+        colnames(result)[ncol(result)] = paste(i, "차",sep="")
+      }
+    }
+    
+    setwd(bef_Path)#경로를 다시 원래대로 바꾼다.
+    return(result)
+  }
+}
