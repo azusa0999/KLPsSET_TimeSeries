@@ -36,13 +36,11 @@ KLIPsSet_TimeSeries <- function(file__Path, itemCode, indexs){
         pid <- getDt["pid"]#일련번호
         item <- getDt[itemVal]#원하는 항목.
         result <- cbind(pid, item)
-        colnames(result) <- c("일련번호", paste(i,"차",sep=""))
+        colnames(result) <- c("pid", paste(i,"차",sep=""))#17.11.7 일련번호->pid로 수정.
       }
       else {
-        getDt <- cbind(getDt["pid"], getDt[itemVal])
-        x1 <- result[match(result[,1],getDt[,1]),]
-        x2 <- getDt[match(result[,1],getDt[,1]),]
-        result <- cbind(x1, x2[,2])
+        getDt <- cbind(getDt["pid"], getDt[itemVal])        
+        result <- merge(x=result,y=getDt,by="pid",all.x=TRUE)#17.11.7 match 함수에서 -> merge로 방식 변경.
         colnames(result)[ncol(result)] = paste(i, "차",sep="")
       }
     }
