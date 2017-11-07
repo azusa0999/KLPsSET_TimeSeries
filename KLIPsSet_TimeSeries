@@ -1,19 +1,5 @@
-KLIPS_getTimeSeries <- function(file__Path, itemCode, indexs){
-  #=======================================================================================
-  # 해당 함수는 한국노동연구원 한국노동패널(KLIPS)의 파일들이 시간으로 나누어져
-  # 특정 항목을 시계열자료로 구성해야 할 때의 불편함을 줄이고자 작성되었습니다.
-  # 물론 초기시점을 기준으로 다른 시점들의 교집합에 대해서만 
-  # 구성한다는 점에 주의하십시오.
-  # 파일은 dta 포맷에 한정하여 가능합니다. 또한 foreign 라이브러리를 설치하셔야 합니다.
-  # 또 하나 (개인)자료에 한정합니다.
-  # 작성자 : 현정경 (블로그주소 : http://jobmg.dothome.co.kr)
-  # 파라미터 설명 :
-  #  filePath : (문자형)KLIPS 자료가 있는 실제 경로(ex)C:/R/KLIPs/
-  #  itemCode : (문자형)원하는 항목코드 네 자리.
-  #  indexs : (벡터)차수에 해당하는 정보 리스트. ex)2차부터 4차까지 하려면 (2:4)
-  # 사용 예 : 
-  # data <- KLIPS_getTimeSeries("I:/R/data/","0211", 10:11)
-  #=======================================================================================
+KLIPsSet_TimeSeries <- function(file__Path, itemCode, indexs){
+
   isChecked = 0#value checked
   if(is.na(file__Path) || file__Path == ""){print("filePath에 값이 없습니다.")}
   if(is.na(itemCode) || itemCode == ""){print("itemCode에 값이 없습니다.")}
