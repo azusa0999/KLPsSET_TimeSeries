@@ -11,6 +11,7 @@
 #  filePath : (문자형)KLIPS 자료가 있는 실제 경로(ex)C:/R/KLIPs/
 #  itemCode : (문자형)원하는 항목코드 네 자리.
 #  indexs : (벡터)차수에 해당하는 정보 리스트. ex)2차부터 4차까지 하려면 (2:4)
+#  jointype : (문자형)c('LEFT', 'INNER', 'OUTER', 'CROSS')로 나뉘며 디폴트로 CROSS JOIN을 한다.
 # 사용 예 : 
-# data <- KLIPsSet_TimeSeries("I:/R/data/","0211", 10:11)
+# data <- KLIPsSet_TimeSeries("I:/R/data/","0211", 10:11, "inner")
 #=======================================================================================
