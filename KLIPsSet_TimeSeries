@@ -1,4 +1,4 @@
-KLIPsSet_TimeSeries <- function(file__Path, itemCode, indexs){
+KLIPsSet_TimeSeries <- function(file__Path, itemCode, indexs, jointype){
 
   isChecked = 0#value checked
   if(is.na(file__Path) || file__Path == ""){print("filePath에 값이 없습니다.")}
@@ -39,8 +39,21 @@ KLIPsSet_TimeSeries <- function(file__Path, itemCode, indexs){
         colnames(result) <- c("pid", paste(i,"차",sep=""))#17.11.7 일련번호->pid로 수정.
       }
       else {
-        getDt <- cbind(getDt["pid"], getDt[itemVal])        
-        result <- merge(x=result,y=getDt,by="pid",all.x=TRUE)#17.11.7 match 함수에서 -> merge로 방식 변경.
+        getDt <- cbind(getDt["pid"], getDt[itemVal]) 
+        
+        if(toupper(jointype) == "LEFT"){
+          result <- merge(x=result,y=getDt,by="pid",all.x=TRUE)
+        }
+        else if(toupper(jointype) == "INNER"){
+          result <- merge(x=result,y=getDt,by="pid")
+        }
+        else if(toupper(jointype) == "OUTER"){
+          result <- merge(x=result,y=getDt,by="pid", all=T)
+        }
+        else{#CROSS JOIN
+          result <- merge(x=result,y=getDt,by=null)
+        }
+        
         colnames(result)[ncol(result)] = paste(i, "차",sep="")
       }
     }
